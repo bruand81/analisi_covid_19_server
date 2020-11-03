@@ -5,4 +5,4 @@ from models.methods import update_db
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        update_db();
+        update_db()

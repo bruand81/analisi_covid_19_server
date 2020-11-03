@@ -19,7 +19,10 @@ def update_db():
         if (latest_date_online - latest_date_in_db).days > 0:
             csv_to_db_regioni()
         else:
-            print('Region update not needed')
+            if RegioniItaliane.objects.filter(data=latest_date_in_db).count() < 20:
+                csv_to_db_regioni()
+            else:
+                print('Region update not needed')
     else:
         csv_to_db_regioni()
 
@@ -29,7 +32,10 @@ def update_db():
         if (latest_date_online - latest_date_in_db).days > 0:
             csv_to_db_province()
         else:
-            print('County update not needed')
+            if ProvinceItaliane.objects.filter(data=latest_date_in_db).count() < 20:
+                csv_to_db_regioni()
+            else:
+                print('Province update not needed')
     else:
         csv_to_db_province()
 
@@ -160,4 +166,4 @@ def csv_to_db_regioni():
                 cfr=record.CFR  # 71
             )
             dato_regionale.save()
-    print("County data saved in DB")
+    print("Region data saved in DB")
