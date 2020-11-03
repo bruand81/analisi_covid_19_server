@@ -1,0 +1,46 @@
+{% load static %}
+{% load region_extras %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'regioni/style.css' %}">
+    <meta charset="UTF-8">
+    <title>Riepilogo regioni</title>
+</head>
+<body>
+{% if all_region_data %}
+    <h1>Dati Covid-19 Italia aggiornati al {{ all_region_data.first.data|date:"DATE_FORMAT" }}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Regione</th>
+                <th>Percentuale positivi/tamponi</th>
+                <th>Percentuale positivi/persone testate</th>
+                <th>Decessi</th>
+                <th>Nuove Terapie intensive</th>
+                <th>Nuovi ricoverati</th>
+                <th>Incidenza a 7 giorni</th>
+                <th>CFR</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for region_data in all_region_data %}
+            <tr>
+                <td>{{ region_data.denominazione_regione }}</td>
+                <td>{{ region_data.percentuale_positivi_tamponi_giornaliera|percentage }} ({{ region_data.nuovi_positivi }}/{{ region_data.variazione_tamponi }})</td>
+                <td>{{ region_data.percentuale_positivi_casi_giornaliera|percentage }} ({{ region_data.nuovi_positivi }}/{{ region_data.variazione_casi_testati }})</td>
+                <td>{{ region_data.variazione_deceduti }}</td>
+                <td>{{ region_data.variazione_terapia_intensiva }}</td>
+                <td>{{ region_data.variazione_ricoverati_con_sintomi }}</td>
+                <td>{{ region_data.incidenza_7d }} positivi/100.000 abitanti</td>
+                <td>{{ region_data.cfr|percentage }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Nessun dato</p>
+{% endif %}
+</body>
+</html>

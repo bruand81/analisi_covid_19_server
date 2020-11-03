@@ -1,0 +1,46 @@
+{% load static %}
+{% load region_extras %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'regioni/style.css' %}">
+    <meta charset="UTF-8">
+    <title>Riepilogo province</title>
+</head>
+<body>
+{% if all_county_data %}
+    <h1>Dati Covid-19 Province italiane aggiornati al {{ all_county_data.first.data|date:"DATE_FORMAT" }}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Regione</th>
+                <th>Provincia</th>
+                <th>Totale casi</th>
+                <th>Nuovi casi</th>
+                <th>Nuovi casi (% variazione)</th>
+                <th>Incidenza</th>
+                <th>Incidenza a 7 giorni</th>
+                <th>Incremento positivi a 7 giorni</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for county_data in all_county_data %}
+            <tr>
+                <td>{{ county_data.denominazione_regione }}</td>
+                <td>{{ county_data.denominazione_provincia }}</td>
+                <td>{{ county_data.totale_casi }}</td>
+                <td>{{ county_data.variazione_totale_casi }}</td>
+                <td>{{ county_data.percentuale_variazione_totale_casi|percentage }}</td>
+                <td>{{ county_data.incidenza }} positivi/100.000 abitanti</td>
+                <td>{{ county_data.incidenza_7d }} positivi/100.000 abitanti</td>
+                <td>{{ county_data.variazione_totale_casi_7dma }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Nessun dato</p>
+{% endif %}
+</body>
+</html>
