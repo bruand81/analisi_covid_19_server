@@ -21,7 +21,7 @@ importlib-metadata
 kiwisolver==1.2.0
 Markdown
 matplotlib
-mkl-fft==1.2.0
+mkl-fft
 mkl-random==1.1.1
 mkl-service==2.3.0
 mock==4.0.2
