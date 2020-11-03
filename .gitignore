@@ -265,3 +265,4 @@ fabric.properties
 /config/secret_key.txt
 /staticfiles/*
 analisi_covid_19_server/settings.prod.py
+analisi_covid_19_server/settingsprod.py
