@@ -264,3 +264,4 @@ fabric.properties
 /db.sqlite3
 /config/secret_key.txt
 /staticfiles/*
+analisi_covid_19_server/settings.prod.py
