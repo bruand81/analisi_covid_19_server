@@ -22,9 +22,6 @@ kiwisolver==1.2.0
 Markdown
 matplotlib
 numpy
-mkl-fft
-mkl-random
-mkl-service
 mock==4.0.2
 numpy
 olefile==0.46
