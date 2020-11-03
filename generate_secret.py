@@ -20,7 +20,7 @@ def main():
         print("Creating config folder")
     if not os.path.exists('config/secret_key.txt'):
         secret_key = get_random_string(50)
-        with open('config/secret_key.txt', 'wtexit') as secret_key_file:
+        with open('config/secret_key.txt', 'wt') as secret_key_file:
             secret_key_file.write(secret_key)
             secret_key_file.close()
             print("Secret key file created")
