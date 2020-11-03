@@ -263,3 +263,4 @@ fabric.properties
 
 /db.sqlite3
 /config/secret_key.txt
+/staticfiles/*
