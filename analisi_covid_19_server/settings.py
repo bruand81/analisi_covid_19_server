@@ -26,7 +26,7 @@ with open(f'{BASE_DIR}/config/secret_key.txt') as f:
 # DEBUG = True
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'antaresnet.org/']
 
 # Application definition
 
