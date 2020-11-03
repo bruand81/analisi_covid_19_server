@@ -21,6 +21,7 @@ importlib-metadata
 kiwisolver==1.2.0
 Markdown
 matplotlib
+numpy
 mkl-fft
 mkl-random
 mkl-service
