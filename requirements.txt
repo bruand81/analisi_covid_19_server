@@ -29,7 +29,7 @@ palettable==3.3.0
 pandas
 Pillow
 promise==2.3
-psycopg2
+psycopg2-binary
 pycparser
 Pygments
 PyMySQL
