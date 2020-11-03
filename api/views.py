@@ -79,7 +79,7 @@ class RegioniItalianeViewSet(viewsets.ReadOnlyModelViewSet):
         max_days = parse_max_days(self.request.query_params.get('max_days', None))
         if max_days > 0:
             try:
-                d = pytz.utc.localize(datetime.now() - timedelta(days=int(max_days)))
+                d = pytz.utc.localize(RegioniItaliane.objects.latest('data').data - timedelta(days=int(max_days)))
                 return RegioniItaliane.objects.filter(data__gte=d)
             except RegioniItaliane.DoesNotExist:
                 raise Http404
@@ -109,7 +109,7 @@ class ProvinceItalianeViewSet(viewsets.ReadOnlyModelViewSet):
         max_days = parse_max_days(self.request.query_params.get('max_days', None))
         if max_days > 0:
             try:
-                d = pytz.utc.localize(datetime.now() - timedelta(days=int(max_days)))
+                d = pytz.utc.localize(ProvinceItaliane.objects.latest('data').data - timedelta(days=int(max_days)))
                 return ProvinceItaliane.objects.filter(data__gte=d)
             except RegioniItaliane.DoesNotExist:
                 raise Http404
