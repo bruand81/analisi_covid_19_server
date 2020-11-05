@@ -1,3 +1,7 @@
+import logging
+
+from django.conf import settings
+from django.core.mail import send_mail
 from django.db import transaction
 
 from models.DatiProvince import DatiProvince
@@ -12,32 +16,49 @@ def update_db():
     print('Check if update db is needed')
     latest_date_online = DatiRecenti().last_update_date
     print(f'Last online version of data is: {latest_date_online.strftime("%x")}')
+    updated = False
 
     if RegioniItaliane.objects.exists():
         latest_date_in_db = RegioniItaliane.objects.latest('data').data
         print(f'Last last version in region DB: {latest_date_in_db.strftime("%x")}')
         if (latest_date_online - latest_date_in_db).days > 0:
             csv_to_db_regioni()
+            updated = True
         else:
             if RegioniItaliane.objects.filter(data=latest_date_in_db).count() < 20:
                 csv_to_db_regioni()
+                updated = True
             else:
                 print('Region update not needed')
     else:
         csv_to_db_regioni()
+        updated = True
 
     if ProvinceItaliane.objects.exists():
         latest_date_in_db = ProvinceItaliane.objects.latest('data').data
         print(f'Last last version in county DB: {latest_date_in_db.strftime("%x")}')
         if (latest_date_online - latest_date_in_db).days > 0:
             csv_to_db_province()
+            updated = True
         else:
             if ProvinceItaliane.objects.filter(data=latest_date_in_db).count() < 20:
                 csv_to_db_regioni()
+                updated = True
             else:
                 print('Province update not needed')
     else:
         csv_to_db_province()
+        updated = True
+
+    if updated:
+        logging.getLogger(__name__).info("Database updated")
+        subject = 'Database app COVID 19 updated'
+        message = ' Updated database for the app Covid 19'
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = ['andrea.bruno@antaresnet.org', ]
+        send_mail(subject, message, email_from, recipient_list)
+    else:
+        logging.getLogger(__name__).info("Database not updated")
 
 
 
