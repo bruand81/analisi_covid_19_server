@@ -154,11 +154,8 @@ LOGGING = {
             'filename': f'{BASE_DIR}/debug.log',
         },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
+    'root': {
+        'handlers': ['file'],
+        'level': 'DEBUG'
     },
 }

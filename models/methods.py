@@ -51,14 +51,14 @@ def update_db():
         updated = True
 
     if updated:
-        logging.getLogger(__name__).debug("Database updated")
+        logging.getLogger().info("Database updated")
         subject = 'Database app COVID 19 updated'
         message = ' Updated database for the app Covid 19'
         email_from = settings.EMAIL_HOST_USER
         recipient_list = ['andrea.bruno@antaresnet.org', ]
         send_mail(subject, message, email_from, recipient_list)
     else:
-        logging.getLogger(__name__).debug("Database not updated")
+        logging.getLogger().info("Database not updated")
 
 
 
