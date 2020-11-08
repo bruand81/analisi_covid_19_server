@@ -61,8 +61,6 @@ def update_db():
         logging.getLogger().info(f'{__name__}: Database not updated')
 
 
-
-
 def csv_to_db():
     csv_to_db_regioni()
     csv_to_db_province()
@@ -149,8 +147,10 @@ def csv_to_db_regioni():
                 percentuale_variazione_casi_testati=record.percentuale_variazione_casi_testati,  # 37
                 percentuale_variazione_deceduti=record.percentuale_variazione_deceduti,  # 38
                 percentuale_variazione_dimessi_guariti=record.percentuale_variazione_dimessi_guariti,  # 39
-                percentuale_variazione_isolamento_domiciliare=record.percentuale_variazione_isolamento_domiciliare,  # 40
-                percentuale_variazione_ricoverati_con_sintomi=record.percentuale_variazione_ricoverati_con_sintomi,  # 41
+                percentuale_variazione_isolamento_domiciliare=record.percentuale_variazione_isolamento_domiciliare,
+                # 40
+                percentuale_variazione_ricoverati_con_sintomi=record.percentuale_variazione_ricoverati_con_sintomi,
+                # 41
                 percentuale_variazione_tamponi=record.percentuale_variazione_tamponi,  # 42
                 percentuale_variazione_terapia_intensiva=record.percentuale_variazione_terapia_intensiva,  # 43
 
