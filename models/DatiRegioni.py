@@ -8,10 +8,13 @@ from models.PopolazioneIstat import PopolazioneIstat
 
 
 class DatiRegioni:
-    _repo_path = "https://raw.githubusercontent.com/pcm-dpc/COVID-19/master"
-    _nazionale = f'{_repo_path}/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale.csv'
-    _nazionale_latest = f'{_repo_path}/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-latest.csv'
-    _regioni = f'{_repo_path}/dati-regioni/dpc-covid19-ita-regioni.csv'
+    _repo_path = "https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json"
+    # _nazionale = f'{_repo_path}/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale.csv'
+    # _nazionale_latest = f'{_repo_path}/dati-andamento-nazionale/dpc-covid19-ita-andamento-nazionale-latest.csv'
+    # _regioni = f'{_repo_path}/dati-regioni/dpc-covid19-ita-regioni.csv'
+    _nazionale = f'{_repo_path}/dpc-covid19-ita-andamento-nazionale.json'
+    _nazionale_latest = f'{_repo_path}/dpc-covid19-ita-andamento-nazionale-latest.json'
+    _regioni = f'{_repo_path}/dpc-covid19-ita-regioni.json'
     _variation_columns = ['tamponi', 'casi_testati', 'terapia_intensiva', 'ricoverati_con_sintomi', 'deceduti',
                           'dimessi_guariti', 'isolamento_domiciliare', 'casi_da_screening',
                           'casi_da_sospetto_diagnostico']
@@ -32,8 +35,8 @@ class DatiRegioni:
 
     def __init_full_data(self):
         print('Processamento dati riepilogativi nazionali e regionali')
-        data_naz = pd.read_csv(self._nazionale)
-        data_reg = pd.read_csv(self._regioni)
+        data_naz = pd.read_json(self._nazionale)
+        data_reg = pd.read_json(self._regioni)
         data_naz.sort_values(by='data', inplace=True)
         data_naz.fillna(0, inplace=True)
         data_naz['codice_regione'] = 0
@@ -160,5 +163,5 @@ class DatiRegioni:
 
     @property
     def latest_update_date(self) -> datetime:
-        data_naz = pd.read_csv(self._nazionale_latest)
+        data_naz = pd.read_json(self._nazionale_latest)
         return pd.to_datetime(data_naz.data).max()
