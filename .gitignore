@@ -266,3 +266,4 @@ fabric.properties
 /staticfiles/*
 analisi_covid_19_server/settings.prod.py
 analisi_covid_19_server/settingsprod.py
+/config/test.py

@@ -45,5 +45,6 @@ class RiepilogoRegioniSerializer(serializers.HyperlinkedModelSerializer):
             'percentuale_positivi_casi_giornaliera',
             'percentuale_variazione_terapia_intensiva',
             'percentuale_variazione_deceduti',
+            'percentuale_positivi_casi_7dma',
             'cfr'
         ]

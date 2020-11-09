@@ -17,6 +17,7 @@
                 <th>Regione</th>
                 <th>Percentuale positivi/tamponi</th>
                 <th>Percentuale positivi/persone testate</th>
+                <th>Percentuale positivi/persone testate (7g)</th>
                 <th>Decessi</th>
                 <th>Nuove Terapie intensive</th>
                 <th>Nuovi ricoverati</th>
@@ -30,6 +31,7 @@
                 <td>{{ region_data.denominazione_regione }}</td>
                 <td>{{ region_data.percentuale_positivi_tamponi_giornaliera|percentage }} ({{ region_data.nuovi_positivi }}/{{ region_data.variazione_tamponi }})</td>
                 <td>{{ region_data.percentuale_positivi_casi_giornaliera|percentage }} ({{ region_data.nuovi_positivi }}/{{ region_data.variazione_casi_testati }})</td>
+                <td>{{ region_data.percentuale_positivi_casi_7dma|percentage }}</td>
                 <td>{{ region_data.variazione_deceduti }}</td>
                 <td>{{ region_data.variazione_terapia_intensiva }}</td>
                 <td>{{ region_data.variazione_ricoverati_con_sintomi }}</td>

@@ -59,10 +59,11 @@ class DatiRegioni:
         nuovi_positivi_7dsum = pd.Series([])
         nuovi_positivi_7dma = pd.Series([])
         nuovi_positivi_3dma = pd.Series([])
+        casi_testati_7dma = pd.Series([])
         increments = pd.Series([])
         increments_percentage = pd.Series([])
         increments_7dma = pd.Series(name='nuovi_positivi_7dma')
-        increments_3dma = pd.Series(name='nuovi_positivi_7dma')
+        increments_3dma = pd.Series(name='nuovi_positivi_3dma')
 
         for region in regions:
             selected_rows = self._full_data.codice_regione == region
@@ -106,6 +107,10 @@ class DatiRegioni:
             self._full_data['casi_testati'])
         self._full_data['percentuale_positivi_casi_giornaliera'] = self._full_data['nuovi_positivi'].divide(
             self._full_data['variazione_casi_testati'])
+        self._full_data['percentuale_positivi_casi_7dma'] = self._full_data['nuovi_positivi_7dma'].divide(
+            self._full_data['variazione_casi_testati_7dma'])
+        self._full_data['percentuale_positivi_casi_3dma'] = self._full_data['nuovi_positivi_3dma'].divide(
+            self._full_data['variazione_casi_testati_3dma'])
         self._full_data['CFR'] = self._full_data['deceduti'].divide(
             self._full_data['totale_casi'])
 

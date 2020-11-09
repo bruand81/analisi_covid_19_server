@@ -48,6 +48,8 @@ class RegioniItaliane(models.Model):
     percentuale_variazione_ricoverati_con_sintomi = models.FloatField()  # 41
     percentuale_variazione_tamponi = models.FloatField()  # 42
     percentuale_variazione_terapia_intensiva = models.FloatField()  # 43
+    percentuale_positivi_casi_7dma = models.FloatField()
+    percentuale_positivi_casi_3dma = models.FloatField()
 
     # 3DMA variation data
     variazione_casi_da_screening_3dma = models.IntegerField()  # 45

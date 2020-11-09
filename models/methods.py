@@ -153,6 +153,8 @@ def csv_to_db_regioni():
                 # 41
                 percentuale_variazione_tamponi=record.percentuale_variazione_tamponi,  # 42
                 percentuale_variazione_terapia_intensiva=record.percentuale_variazione_terapia_intensiva,  # 43
+                percentuale_positivi_casi_7dma=record.percentuale_positivi_casi_7dma,
+                percentuale_positivi_casi_3dma=record.percentuale_positivi_casi_3dma,
 
                 # 3DMA variation data
                 variazione_casi_da_screening_3dma=record.variazione_casi_da_screening_3dma,  # 45
