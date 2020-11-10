@@ -190,3 +190,13 @@ def csv_to_db_regioni():
             )
             dato_regionale.save()
     print("Region data saved in DB")
+
+
+def clean_region_from_db():
+    RegioniItaliane.objects.all().delete()
+    print("Region cleaned")
+
+
+def clean_province_from_db():
+    ProvinceItaliane.objects.all().delete()
+    print("County cleaned")
