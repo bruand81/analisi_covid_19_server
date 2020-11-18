@@ -4,10 +4,10 @@ from rest_framework import routers
 from . import views
 
 router = routers.DefaultRouter()
-router.register(r'regioni', views.RegioniItalianeViewSet)
 router.register(r'province', views.ProvinceItalianeViewSet)
 router.register(r'riepilogo', views.RiepilogoRegioniViewSet)
 router.register(r'list', views.RegioniListViewsSet)
+router.register(r'regioni', views.RegioniItalianeViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
