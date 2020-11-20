@@ -53,7 +53,7 @@ def update_db():
     if updated:
         logging.getLogger().info(f'{__name__}: Database updated')
         subject = 'Database app COVID 19 updated'
-        message = ' Updated database for the app Covid 19'
+        message = f'Updated database for the app Covid 19 to {latest_date_online.strftime("%c")}'
         email_from = settings.EMAIL_HOST_USER
         recipient_list = ['andrea.bruno@antaresnet.org', ]
         send_mail(subject, message, email_from, recipient_list)
