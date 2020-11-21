@@ -186,7 +186,18 @@ def csv_to_db_regioni():
                 percentuale_positivi_tamponi_giornaliera=record.percentuale_positivi_tamponi_giornaliera,  # 68
                 percentuale_positivi_casi=record.percentuale_positivi_casi,  # 69
                 percentuale_positivi_casi_giornaliera=record.percentuale_positivi_casi_giornaliera,  # 70
-                cfr=record.CFR  # 71
+                cfr=record.CFR, # 71
+
+                nuovi_positivi_7dsum=record.nuovi_positivi_7dsum,
+                nuovi_positivi_7d_incr=record.nuovi_positivi_7d_incr,
+                terapia_intensiva_7dsum=record.terapia_intensiva_7dsum,
+                terapia_intensiva_7d_incr=record.terapia_intensiva_7d_incr,
+                deceduti_7dsum=record.deceduti_7dsum,
+                deceduti_7d_incr=record.deceduti_7d_incr,
+                dimessi_guariti_7dsum=record.dimessi_guariti_7dsum,
+                dimessi_guariti_7d_incr=record.dimessi_guariti_7d_incr,
+                ricoverati_con_sintomi_7dsum=record.ricoverati_con_sintomi_7dsum,
+                ricoverati_con_sintomi_7d_incr=record.ricoverati_con_sintomi_7d_incr,
             )
             dato_regionale.save()
     print("Region data saved in DB")

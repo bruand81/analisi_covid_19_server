@@ -47,6 +47,7 @@ class DatiRegioni:
         data_reg.fillna(0, inplace=True)
 
         self._full_data = pd.merge(data_naz, data_reg, how='outer')
+        self._full_data['date'] = pd.to_datetime(self._full_data['data']).dt.normalize()
         self._full_data = self._full_data.merge(
             self.popolazione_istat_regioni_italia[['codice_regione', 'popolazione']],
             how='outer', on='codice_regione')
@@ -56,10 +57,14 @@ class DatiRegioni:
 
         regions = self._full_data.codice_regione.unique()
 
-        nuovi_positivi_7dsum = pd.Series([])
-        nuovi_positivi_7dma = pd.Series([])
-        nuovi_positivi_3dma = pd.Series([])
-        casi_testati_7dma = pd.Series([])
+        nuovi_positivi_7dsum = pd.Series(index=self._full_data.index).fillna(0).astype(int)
+        terapia_intensiva_7dsum = pd.Series(index=self._full_data.index).fillna(0).astype(int)
+        deceduti_7dsum = pd.Series(index=self._full_data.index).fillna(0).astype(int)
+        dimessi_guariti_7dsum = pd.Series(index=self._full_data.index).fillna(0).astype(int)
+        ricoverati_con_sintomi_7dsum = pd.Series(index=self._full_data.index).fillna(0).astype(int)
+        nuovi_positivi_7dma = pd.Series(index=self._full_data.index).fillna(0).astype(int)
+        nuovi_positivi_3dma = pd.Series(index=self._full_data.index).fillna(0).astype(int)
+        # casi_testati_7dma = pd.Series([])
         increments = pd.Series([])
         increments_percentage = pd.Series([])
         increments_7dma = pd.Series(name='nuovi_positivi_7dma')
@@ -76,12 +81,13 @@ class DatiRegioni:
             increments_percentage = pd.concat([increments_percentage, tmp.pct_change(fill_method='ffill')], axis=0)
             increments_7dma = pd.concat([increments_7dma, tmp.rolling(window=7).mean()], axis=0)
             increments_3dma = pd.concat([increments_3dma, tmp.rolling(window=3).mean()], axis=0)
-            nuovi_positivi_7dma = nuovi_positivi_7dma.append(self._full_data[selected_rows].nuovi_positivi.
-                                                             rolling(window=7).mean())
-            nuovi_positivi_3dma = nuovi_positivi_3dma.append(self._full_data[selected_rows].nuovi_positivi.
-                                                             rolling(window=3).mean())
-            nuovi_positivi_7dsum = nuovi_positivi_7dsum.append(self._full_data[selected_rows].nuovi_positivi.
-                                                               rolling(window=7).sum())
+            nuovi_positivi_7dma.iloc[self._full_data[selected_rows].index] = self._full_data[selected_rows].nuovi_positivi.rolling(window=7).mean()
+            nuovi_positivi_3dma.iloc[self._full_data[selected_rows].index] = self._full_data[selected_rows].nuovi_positivi. rolling(window=3).mean()
+            nuovi_positivi_7dsum.iloc[self._full_data[selected_rows].index] = self._full_data[selected_rows].nuovi_positivi.rolling(window=7).sum()
+            terapia_intensiva_7dsum.iloc[tmp.index] = tmp.terapia_intensiva.rolling(window=7).sum()
+            deceduti_7dsum.iloc[tmp.index] = tmp.deceduti.rolling(window=7).sum()
+            dimessi_guariti_7dsum.iloc[tmp.index] = tmp.dimessi_guariti.rolling(window=7).sum()
+            ricoverati_con_sintomi_7dsum.iloc[tmp.index] = tmp.ricoverati_con_sintomi.rolling(window=7).sum()
 
         increments.columns = ['variazione_' + str(col) for col in increments.columns]
         increments_percentage.columns = ['percentuale_variazione_' + str(col) for col in increments_percentage.columns]
@@ -90,14 +96,51 @@ class DatiRegioni:
         nuovi_positivi_7dma.fillna(0, inplace=True)
         nuovi_positivi_3dma.fillna(0, inplace=True)
         nuovi_positivi_7dsum.fillna(0, inplace=True)
+
+
         full_data = pd.concat([self._full_data, increments, increments_percentage, increments_3dma, increments_7dma],
                               axis=1)
 
         self._full_data = full_data
+
+        self._full_data['terapia_intensiva_7dsum'] = terapia_intensiva_7dsum.fillna(0).astype(int)
+        self._full_data['deceduti_7dsum'] = deceduti_7dsum.fillna(0).astype(int)
+        self._full_data['dimessi_guariti_7dsum'] = dimessi_guariti_7dsum.fillna(0).astype(int)
+        self._full_data['ricoverati_con_sintomi_7dsum'] = ricoverati_con_sintomi_7dsum.fillna(0).astype(int)
         self._full_data['incidenza_7d'] = (nuovi_positivi_7dsum / (self._full_data['popolazione'] / 100000)).round(
             decimals=2)
         self._full_data['nuovi_positivi_7dma'] = nuovi_positivi_7dma.astype('int')
         self._full_data['nuovi_positivi_3dma'] = nuovi_positivi_3dma.astype('int')
+        self._full_data['nuovi_positivi_7dsum'] = nuovi_positivi_7dsum.astype('int')
+
+        dates = self._full_data.sort_values(by=["date"]).date.unique()
+
+        nuovi_positivi_7d_incr = pd.Series(index=self._full_data.index).fillna(0).astype(int)
+        deceduti_7d_incr = pd.Series(index=self._full_data.index).fillna(0).astype(int)
+        terapia_intensiva_7d_incr = pd.Series(index=self._full_data.index).fillna(0).astype(int)
+        dimessi_guariti_7d_incr = pd.Series(index=self._full_data.index).fillna(0).astype(int)
+        ricoverati_con_sintomi_7d_incr = pd.Series(index=self._full_data.index).fillna(0).astype(int)
+
+        for day in dates:
+            pdate = day - np.timedelta64(7, "D")
+            if pdate in dates:
+                for region in regions:
+                    np7dsum = self._full_data[
+                        (self._full_data.codice_regione == region) & (self._full_data.date == day)]
+                    prev_np7dsum = self._full_data[
+                        (self._full_data.codice_regione == region) & (self._full_data.date == pdate)]
+                    nuovi_positivi_7d_incr.iloc[np7dsum.index] = np7dsum.nuovi_positivi_7dsum.values[0] - prev_np7dsum.nuovi_positivi_7dsum.values[0]
+                    deceduti_7d_incr.iloc[np7dsum.index] = np7dsum.deceduti_7dsum.values[0] - prev_np7dsum.deceduti_7dsum.values[0]
+                    terapia_intensiva_7d_incr.iloc[np7dsum.index] = np7dsum.terapia_intensiva_7dsum.values[0] - prev_np7dsum.terapia_intensiva_7dsum.values[0]
+                    dimessi_guariti_7d_incr.iloc[np7dsum.index] = np7dsum.dimessi_guariti_7dsum.values[0] - prev_np7dsum.dimessi_guariti_7dsum.values[0]
+                    ricoverati_con_sintomi_7d_incr.iloc[np7dsum.index] = np7dsum.ricoverati_con_sintomi_7dsum.values[0] - prev_np7dsum.ricoverati_con_sintomi_7dsum.values[0]
+                    # print(f'{day}: {np7dsum.values[0]} - {prev_np7dsum.values[0]} = {nuovi_positivi_7d_incr.iloc[np7dsum.index].values[0]}')
+
+        self._full_data["nuovi_positivi_7d_incr"] = nuovi_positivi_7d_incr.fillna(0).astype(int)
+        self._full_data["deceduti_7d_incr"] = deceduti_7d_incr.fillna(0).astype(int)
+        self._full_data["terapia_intensiva_7d_incr"] = terapia_intensiva_7d_incr.fillna(0).astype(int)
+        self._full_data["dimessi_guariti_7d_incr"] = dimessi_guariti_7d_incr.fillna(0).astype(int)
+        self._full_data["ricoverati_con_sintomi_7d_incr"] = ricoverati_con_sintomi_7d_incr.fillna(0).astype(int)
 
         self._full_data['percentuale_positivi_tamponi'] = self._full_data['totale_positivi'].divide(
             self._full_data['tamponi'])
@@ -116,8 +159,6 @@ class DatiRegioni:
 
         self._full_data.replace([np.inf, -np.inf], np.nan, inplace=True)
         self._full_data.fillna(0, inplace=True)
-
-        self._full_data['date'] = pd.to_datetime(self._full_data['data'])
 
     @property
     def popolazione_istat(self) -> pd.DataFrame:

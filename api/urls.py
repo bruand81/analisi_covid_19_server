@@ -5,8 +5,8 @@ from . import views
 
 router = routers.DefaultRouter()
 router.register(r'province', views.ProvinceItalianeViewSet)
-router.register(r'riepilogo', views.RiepilogoRegioniViewSet)
-router.register(r'list', views.RegioniListViewsSet)
+# router.register(r'riepilogo', views.RiepilogoRegioniViewSet)
+# router.register(r'list', views.RegioniListViewsSet)
 router.register(r'regioni', views.RegioniItalianeViewSet)
 
 # Wire up our API using automatic URL routing.

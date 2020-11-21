@@ -83,6 +83,17 @@ class RegioniItaliane(models.Model):
     percentuale_positivi_casi_giornaliera = models.FloatField()  # 70
     cfr = models.FloatField()  # 71
 
+    nuovi_positivi_7d_incr = models.IntegerField(default=0)
+    nuovi_positivi_7dsum = models.IntegerField(default=0)
+    terapia_intensiva_7dsum = models.IntegerField(default=0)
+    terapia_intensiva_7d_incr = models.IntegerField(default=0)
+    deceduti_7dsum = models.IntegerField(default=0)
+    deceduti_7d_incr = models.IntegerField(default=0)
+    dimessi_guariti_7dsum = models.IntegerField(default=0)
+    dimessi_guariti_7d_incr = models.IntegerField(default=0)
+    ricoverati_con_sintomi_7dsum = models.IntegerField(default=0)
+    ricoverati_con_sintomi_7d_incr = models.IntegerField(default=0)
+
     class Meta:
         verbose_name = 'Riepilogo Italia'
         verbose_name_plural = 'Riepilogo Italia'

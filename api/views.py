@@ -9,8 +9,8 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import AllowAny
 
 from province.models import ProvinceItaliane
-from .serializers import RegioniItalianeSerializer, ProvinceItalianeSerializer, RiepilogoRegioniSerializer, \
-    RegioniListSerializer
+from .serializers import RegioniItalianeSerializer, ProvinceItalianeSerializer#, RiepilogoRegioniSerializer, \
+    # RegioniListSerializer
 from regioni.models import RegioniItaliane
 
 
@@ -31,32 +31,32 @@ class StandardResultsSetPagination(LimitOffsetPagination):
     max_limit = 1000
 
 
-class RegioniListViewsSet(viewsets.ReadOnlyModelViewSet):
-    queryset = RegioniItaliane.objects.filter(codice_regione__gte=1).values('codice_regione', 'denominazione_regione').order_by('denominazione_regione').distinct()
-    serializer_class = RegioniListSerializer
-    permission_classes = [AllowAny]
-    pagination_class = None
-
-
-class RiepilogoRegioniViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = RegioniItaliane.objects.all()
-    serializer_class = RiepilogoRegioniSerializer
-    filter_backends = [
-        DjangoFilterBackend,
-        SearchFilter,
-        OrderingFilter
-    ]
-    filterset_fields = ['codice_regione', 'data']
-    search_fields = ['denominazione_regione']
-    ordering_fields = ['data', 'codice_regione']
-    ordering = ['data']
-    permission_classes = [AllowAny]
-    pagination_class = None
-
-    def get_queryset(self):
-        max_date = RegioniItaliane.objects.latest('data').data
-        startdate = max_date - timedelta(days=30)
-        return RegioniItaliane.objects.filter(data__gte=startdate)
+# class RegioniListViewsSet(viewsets.ReadOnlyModelViewSet):
+#     queryset = RegioniItaliane.objects.filter(codice_regione__gte=1).values('codice_regione', 'denominazione_regione').order_by('denominazione_regione').distinct()
+#     serializer_class = RegioniListSerializer
+#     permission_classes = [AllowAny]
+#     pagination_class = None
+#
+#
+# class RiepilogoRegioniViewSet(viewsets.ReadOnlyModelViewSet):
+#     queryset = RegioniItaliane.objects.all()
+#     serializer_class = RiepilogoRegioniSerializer
+#     filter_backends = [
+#         DjangoFilterBackend,
+#         SearchFilter,
+#         OrderingFilter
+#     ]
+#     filterset_fields = ['codice_regione', 'data']
+#     search_fields = ['denominazione_regione']
+#     ordering_fields = ['data', 'codice_regione']
+#     ordering = ['data']
+#     permission_classes = [AllowAny]
+#     pagination_class = None
+#
+#     def get_queryset(self):
+#         max_date = RegioniItaliane.objects.latest('data').data
+#         startdate = max_date - timedelta(days=30)
+#         return RegioniItaliane.objects.filter(data__gte=startdate)
 
 
 class RegioniItalianeViewSet(viewsets.ReadOnlyModelViewSet):
