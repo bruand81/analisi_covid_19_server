@@ -7,8 +7,9 @@ from models.PopolazioneIstat import PopolazioneIstat
 
 
 class DatiProvince:
-    _repo_path = "https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json"
-    _province = f'{_repo_path}/dpc-covid19-ita-province.json'
+    _repo_path = "https://raw.githubusercontent.com/pcm-dpc/COVID-19/master"
+    _province = f'{_repo_path}/dati-json/dpc-covid19-ita-province.json'
+    _province_csv = f'{_repo_path}/dati-province/dpc-covid19-ita-province.csv'
     _variation_columns_province = ['totale_casi']
     _istat = PopolazioneIstat()
     _dati_provinciali = None
@@ -27,7 +28,11 @@ class DatiProvince:
 
     def __init_province(self):
         print('Processamento dati riepilogativi provinciali')
-        self._dati_provinciali = pd.read_json(self._province)
+        try:
+            self._dati_provinciali = pd.read_json(self._province)
+        except ValueError as e:
+            print(f'Si è verificato un errore con il json. Tento di usare il csv: {e}')
+            self._dati_provinciali = pd.read_csv(self._province_csv)
         self._dati_provinciali.fillna(0, inplace=True)
         self._dati_provinciali = self._dati_provinciali.merge(
             self._istat.provincie[['codice_provincia', 'popolazione']], how='outer', on='codice_provincia')
