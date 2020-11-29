@@ -22,6 +22,8 @@ class ProvinceItaliane(models.Model):
     variazione_totale_casi_3dma = models.IntegerField()
     variazione_totale_casi_7dma = models.IntegerField()
     incidenza_7d = models.FloatField()
+    nuovi_positivi_7dsum = models.IntegerField(default=0)
+    nuovi_positivi_7d_incr = models.IntegerField(default=0)
 
     class Meta:
         verbose_name = 'Riepilogo Province'

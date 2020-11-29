@@ -41,6 +41,7 @@ class DatiProvince:
 
         self._dati_provinciali['incidenza'].fillna(0, inplace=True)
         self._dati_provinciali['incidenza'] = self._dati_provinciali['incidenza'].round(decimals=2)
+        self._dati_provinciali['date'] = pd.to_datetime(self._dati_provinciali['data']).dt.normalize()
 
         counties = self._dati_provinciali.codice_provincia.unique()
 
@@ -74,10 +75,31 @@ class DatiProvince:
         incidenza_7d.replace([np.inf, -np.inf], np.nan, inplace=True)
         incidenza_7d.fillna(0, inplace=True)
         incidenza_7d = incidenza_7d.round(decimals=2)
+        self._dati_provinciali['nuovi_positivi_7dsum'] = nuovi_positivi_7dsum.fillna(0).astype('int')
+
+        dates = self._dati_provinciali.sort_values(by=["date"]).date.unique()
+        nuovi_positivi_7d_incr = pd.Series(index=self._dati_provinciali.index).fillna(0).astype(int)
+        for day in dates:
+            pdate = day - np.timedelta64(7, "D")
+            if pdate in dates:
+                for county in counties:
+                    try:
+                        np7dsum = self._dati_provinciali[
+                            (self._dati_provinciali.codice_provincia == county) & (self._dati_provinciali.date == day)]
+                        np7dsumValue = np7dsum.nuovi_positivi_7dsum.values[0]
+                    except IndexError:
+                        np7dsumValue = 0
+                    try:
+                        prev_np7dsum = self._dati_provinciali[
+                            (self._dati_provinciali.codice_provincia == county) & (self._dati_provinciali.date == pdate)].nuovi_positivi_7dsum.values[0]
+                    except IndexError:
+                        prev_np7dsum = 0
+                    nuovi_positivi_7d_incr.iloc[np7dsum.index] = np7dsumValue - prev_np7dsum
+
+        self._dati_provinciali['nuovi_positivi_7d_incr'] = nuovi_positivi_7d_incr
         self._dati_provinciali['incidenza_7d'] = incidenza_7d
         self._dati_provinciali.replace([np.inf, -np.inf], np.nan, inplace=True)
         self._dati_provinciali.fillna(0, inplace=True)
-        self._dati_provinciali['date'] = pd.to_datetime(self._dati_provinciali['data'])
         self._dati_provinciali['formatted_date'] = self._dati_provinciali.date.dt.strftime('%d/%m/%Y')
 
     @property

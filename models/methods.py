@@ -90,6 +90,8 @@ def csv_to_db_province():
                 variazione_totale_casi_3dma=record.variazione_totale_casi_3dma,
                 variazione_totale_casi_7dma=record.variazione_totale_casi_7dma,
                 incidenza_7d=record.incidenza_7d,
+                nuovi_positivi_7dsum=record.nuovi_positivi_7dsum,
+                nuovi_positivi_7d_incr=record.nuovi_positivi_7d_incr
             )
             dato_provinciale.save()
     print("County data saved in DB")
