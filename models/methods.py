@@ -64,7 +64,7 @@ def update_db():
         else:
             logging.getLogger().info(f'{__name__}: Database not updated')
     else:
-        logging.getLogger().info(f'Lock file exists. Skypping update')
+        logging.getLogger().info(f'Lock file exists. Skipping update {os.path.abspath("update.lock")}')
         # print(f'Lock file exists. Skypping update')
 
 
