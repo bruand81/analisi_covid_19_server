@@ -14,7 +14,7 @@ import os
 
 
 def update_db():
-    if not os.exists('update.lock'):
+    if not os.path.exists('update.lock'):
         logging.getLogger().info('Check if update db is needed')
         latest_date_online = DatiRecenti().last_update_date
         logging.getLogger().info(f'Last online version of data is: {latest_date_online.strftime("%x")}')
