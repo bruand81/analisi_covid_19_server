@@ -17,7 +17,7 @@ class DatiRegioni:
     _regioni = f'{_repo_path}/dati-json/dpc-covid19-ita-regioni.json'
     _variation_columns = ['tamponi', 'casi_testati', 'terapia_intensiva', 'ricoverati_con_sintomi', 'deceduti',
                           'dimessi_guariti', 'isolamento_domiciliare', 'casi_da_screening',
-                          'casi_da_sospetto_diagnostico']
+                          'casi_da_sospetto_diagnostico', 'ingressi_terapia_intensiva']
     _full_data: pd.DataFrame = None
     _istat = PopolazioneIstat()
     __max_days = np.inf

@@ -94,6 +94,10 @@ class RegioniItaliane(models.Model):
     ricoverati_con_sintomi_7dsum = models.IntegerField(default=0)
     ricoverati_con_sintomi_7d_incr = models.IntegerField(default=0)
     ingressi_terapia_intensiva = models.IntegerField(default=0)
+    percentuale_variazione_ingressi_terapia_intensiva = models.FloatField(default=0)
+    variazione_ingressi_terapia_intensiva = models.IntegerField(default=0)
+    variazione_ingressi_terapia_intensiva_3dma = models.IntegerField(default=0)
+    variazione_ingressi_terapia_intensiva_7dma = models.IntegerField(default=0)
 
     class Meta:
         verbose_name = 'Riepilogo Italia'

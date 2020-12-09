@@ -212,6 +212,10 @@ def csv_to_db_regioni():
                 ricoverati_con_sintomi_7dsum=record.ricoverati_con_sintomi_7dsum,
                 ricoverati_con_sintomi_7d_incr=record.ricoverati_con_sintomi_7d_incr,
                 ingressi_terapia_intensiva=record.ingressi_terapia_intensiva,
+                percentuale_variazione_ingressi_terapia_intensiva=record.percentuale_variazione_ingressi_terapia_intensiva,
+                variazione_ingressi_terapia_intensiva=record.variazione_ingressi_terapia_intensiva,
+                variazione_ingressi_terapia_intensiva_3dma=record.variazione_ingressi_terapia_intensiva_3dma,
+                variazione_ingressi_terapia_intensiva_7dma=record.variazione_ingressi_terapia_intensiva_7dma,
             )
             dato_regionale.save()
     logging.getLogger().info("Region data saved in DB")
