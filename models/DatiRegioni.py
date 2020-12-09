@@ -53,6 +53,10 @@ class DatiRegioni:
         data_naz['denominazione_regione'] = 'Italia'
         data_naz['lat'] = 41.89277044
         data_naz['long'] = 12.48366722
+        data_naz['note_test'] = data_naz.note_test.astype(str)
+        data_naz['note_casi'] = data_naz.note_casi.astype(str)
+        data_reg['note_test'] = data_reg.note_test.astype(str)
+        data_reg['note_casi'] = data_reg.note_casi.astype(str)
 
         data_reg.fillna(0, inplace=True)
 

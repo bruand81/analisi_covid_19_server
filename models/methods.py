@@ -211,6 +211,7 @@ def csv_to_db_regioni():
                 dimessi_guariti_7d_incr=record.dimessi_guariti_7d_incr,
                 ricoverati_con_sintomi_7dsum=record.ricoverati_con_sintomi_7dsum,
                 ricoverati_con_sintomi_7d_incr=record.ricoverati_con_sintomi_7d_incr,
+                ingressi_terapia_intensiva=record.ingressi_terapia_intensiva,
             )
             dato_regionale.save()
     logging.getLogger().info("Region data saved in DB")
