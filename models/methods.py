@@ -11,10 +11,13 @@ from models.utils import convert_to_datetime
 from province.models import ProvinceItaliane
 from regioni.models import RegioniItaliane
 import os
+from datetime import datetime
+
+lock_file = f'analisi_covid_update_{datetime.today().strftime("%Y%m%d")}.lock'
 
 
 def update_db():
-    if not os.path.exists('update.lock'):
+    if not os.path.exists(lock_file):
         logging.getLogger().info('Check if update db is needed')
         latest_date_online = DatiRecenti().last_update_date
         logging.getLogger().info(f'Last online version of data is: {latest_date_online.strftime("%x")}')
@@ -53,7 +56,7 @@ def update_db():
             updated = True
 
         if updated:
-            os.remove('update.lock')
+            os.remove(lock_file)
             logging.getLogger().info(f'update.lock removed')
             logging.getLogger().info(f'{__name__}: Database updated')
             subject = 'Database app COVID 19 updated'
@@ -74,7 +77,7 @@ def csv_to_db():
 
 
 def csv_to_db_province():
-    open('update.lock', 'a').close()
+    open(lock_file, 'a').close()
     logging.getLogger().info(f'update.lock created')
     df = DatiProvince().dati_provinciali
     records = df.to_records()  # convert to records
@@ -107,7 +110,7 @@ def csv_to_db_province():
 
 
 def csv_to_db_regioni():
-    open('update.lock', 'a').close()
+    open(lock_file, 'a').close()
     logging.getLogger().info(f'update.lock created')
     df = DatiRegioni().dati_completi
     records = df.to_records()  # convert to records
