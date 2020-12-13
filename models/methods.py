@@ -59,8 +59,10 @@ def update_db():
             os.remove(lock_file)
             logging.getLogger().info(f'update.lock removed')
             logging.getLogger().info(f'{__name__}: Database updated')
-            subject = 'Database app COVID 19 updated'
-            message = f'Updated database for the app Covid 19 to {latest_date_online.strftime("%c")}'
+            subject = f'Aggiornamento dati COVID 19 Italia [{latest_date_online.strftime("%c")}]'
+            message = f'<p>Database dell\'app Covid 19 Italia aggiornato al <strong>{latest_date_online.strftime("%c")}</strong></p>' \
+                      f'<p>Collegati all\'indirizzo <a href="https://antarescloud.antaresnet.org/www">' \
+                      f'https://antarescloud.antaresnet.org/www</a></p>'
             email_from = settings.EMAIL_HOST_USER
             recipient_list = ['andrea.bruno@antaresnet.org', ]
             send_mail(subject, message, email_from, recipient_list)
