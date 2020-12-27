@@ -17,42 +17,45 @@ lock_file = f'analisi_covid_update_{datetime.today().strftime("%Y%m%d")}.lock'
 
 
 def update_db():
+    latest_date_online = DatiRecenti().last_update_date
+    updated = False
     if not os.path.exists(lock_file):
         logging.getLogger().info('Check if update db is needed')
-        latest_date_online = DatiRecenti().last_update_date
         logging.getLogger().info(f'Last online version of data is: {latest_date_online.strftime("%x")}')
-        updated = False
+        count_regioni = 0
+        count_province = 0
 
         if RegioniItaliane.objects.exists():
             latest_date_in_db = RegioniItaliane.objects.latest('data').data
             logging.getLogger().info(f'Last last version in region DB: {latest_date_in_db.strftime("%x")}')
             if (latest_date_online - latest_date_in_db).days > 0:
-                csv_to_db_regioni()
+                count_regioni += csv_to_db_regioni()
                 updated = True
             else:
                 if RegioniItaliane.objects.filter(data=latest_date_in_db).count() < 20:
-                    csv_to_db_regioni()
+                    count_regioni += csv_to_db_regioni()
                     updated = True
                 else:
                     logging.getLogger().info('Region update not needed')
         else:
-            csv_to_db_regioni()
+            count_regioni += csv_to_db_regioni()
             updated = True
 
         if ProvinceItaliane.objects.exists():
             latest_date_in_db = ProvinceItaliane.objects.latest('data').data
+            latest_date_province = latest_date_in_db
             logging.getLogger().info(f'Last last version in county DB: {latest_date_in_db.strftime("%x")}')
             if (latest_date_online - latest_date_in_db).days > 0:
-                csv_to_db_province()
+                count_province += csv_to_db_province()
                 updated = True
             else:
                 if ProvinceItaliane.objects.filter(data=latest_date_in_db).count() < 20:
-                    csv_to_db_regioni()
+                    count_province += csv_to_db_province()
                     updated = True
                 else:
                     logging.getLogger().info('Province update not needed')
         else:
-            csv_to_db_province()
+            count_province += csv_to_db_province()
             updated = True
 
         if updated:
@@ -60,17 +63,23 @@ def update_db():
             logging.getLogger().info(f'update.lock removed')
             logging.getLogger().info(f'{__name__}: Database updated')
             subject = f'Aggiornamento dati COVID 19 Italia [{latest_date_online.strftime("%c")}]'
-            message = f'<p>Database dell\'app Covid 19 Italia aggiornato al <strong>{latest_date_online.strftime("%c")}</strong></p>' \
+            message = f'Database dell\'app Covid 19 Italia aggiornato al {latest_date_online.strftime("%c")}' \
+                           f'Collegati all\'indirizzo https://antarescloud.antaresnet.org/www' \
+                           f'sono stati aggiornati/aggiunti {count_regioni} dati regionali/nazionali e {count_province}  dati provinciali'
+            message_html = f'<p>Database dell\'app Covid 19 Italia aggiornato al <strong>{latest_date_online.strftime("%c")}</strong></p>' \
                       f'<p>Collegati all\'indirizzo <a href="https://antarescloud.antaresnet.org/www">' \
-                      f'https://antarescloud.antaresnet.org/www</a></p>'
+                      f'https://antarescloud.antaresnet.org/www</a></p>'\
+                      f'<p>sono stati aggiornati/aggiunti <strong>{count_regioni}</strong> dati regionali/nazionali e <strong>{count_province}</strong>  dati provinciali</p>'
             email_from = settings.EMAIL_HOST_USER
             recipient_list = ['andrea.bruno@antaresnet.org', ]
-            send_mail(subject, message, email_from, recipient_list)
+            send_mail(subject, message, email_from, recipient_list, fail_silently=False, html_message=message_html)
         else:
             logging.getLogger().info(f'{__name__}: Database not updated')
     else:
         logging.getLogger().info(f'Lock file exists. Skipping update {os.path.abspath(lock_file)}')
         # print(f'Lock file exists. Skypping update')
+
+    return updated
 
 
 def csv_to_db():
@@ -78,13 +87,14 @@ def csv_to_db():
     csv_to_db_province()
 
 
-def csv_to_db_province():
+def csv_to_db_province() -> int:
     open(lock_file, 'a').close()
     logging.getLogger().info(f'update.lock created')
     df = DatiProvince().dati_provinciali
     records = df.to_records()  # convert to records
 
     logging.getLogger().info("Saving county in DB")
+    count = 0
     with transaction.atomic():
         for record in records:
             dato_provinciale = ProvinceItaliane(
@@ -108,16 +118,19 @@ def csv_to_db_province():
                 nuovi_positivi_7d_incr=record.nuovi_positivi_7d_incr
             )
             dato_provinciale.save()
+            count += 1
     logging.getLogger().info("County data saved in DB")
+    return count
 
 
-def csv_to_db_regioni():
+def csv_to_db_regioni() -> int:
     open(lock_file, 'a').close()
     logging.getLogger().info(f'update.lock created')
     df = DatiRegioni().dati_completi
     records = df.to_records()  # convert to records
 
     logging.getLogger().info("Saving region in DB")
+    count = 0
     with transaction.atomic():
         for record in records:
             # ts = (record.date - np.datetime64('1970-01-01T00:00:00Z')) / np.timedelta64(1, 's')
@@ -223,7 +236,9 @@ def csv_to_db_regioni():
                 variazione_ingressi_terapia_intensiva_7dma=record.variazione_ingressi_terapia_intensiva_7dma,
             )
             dato_regionale.save()
+            count += 1
     logging.getLogger().info("Region data saved in DB")
+    return count
 
 
 def clean_region_from_db():

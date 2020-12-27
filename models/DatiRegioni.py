@@ -5,6 +5,7 @@ from datetime import datetime
 import os
 from models.DataUtils import get_last_days_of_data
 from models.PopolazioneIstat import PopolazioneIstat
+import logging
 
 
 class DatiRegioni:
@@ -34,17 +35,17 @@ class DatiRegioni:
             self.__max_days = np.inf
 
     def __init_full_data(self):
-        print('Processamento dati riepilogativi nazionali e regionali')
+        logging.getLogger().info('Processamento dati riepilogativi nazionali e regionali')
         try:
             data_naz = pd.read_json(self._nazionale)
         except ValueError as e:
-            print(f'Si è verificato un errore con il json. Tento di usare il csv: {e}')
+            logging.getLogger().warning(f'Si è verificato un errore con il json. Tento di usare il csv: {e}')
             data_naz = pd.read_csv(self._nazionale_csv)
 
         try:
             data_reg = pd.read_json(self._regioni)
         except ValueError as e:
-            print(f'Si è verificato un errore con il json. Tento di usare il csv: {e}')
+            logging.getLogger().warning(f'Si è verificato un errore con il json. Tento di usare il csv: {e}')
             data_reg = pd.read_csv(self._regioni_csv)
 
         data_naz.sort_values(by='data', inplace=True)
@@ -226,6 +227,6 @@ class DatiRegioni:
         try:
             data_naz = pd.read_json(self._nazionale_latest)
         except ValueError as e:
-            print(f'Si è verificato un errore con il json. Tento di usare il csv: {e}')
+            logging.getLogger().warning(f'Si è verificato un errore con il json. Tento di usare il csv: {e}')
             data_naz = pd.read_csv(self._nazionale_latest_csv)
         return pd.to_datetime(data_naz.data).max()

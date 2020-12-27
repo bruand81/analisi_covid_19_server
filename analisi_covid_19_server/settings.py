@@ -159,3 +159,5 @@ LOGGING = {
         'level': 'DEBUG'
     },
 }
+
+UPDATE_INTERVAL = 60

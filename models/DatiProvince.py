@@ -4,6 +4,7 @@ import math
 
 from models.DataUtils import get_last_days_of_data
 from models.PopolazioneIstat import PopolazioneIstat
+import logging
 
 
 class DatiProvince:
@@ -27,11 +28,11 @@ class DatiProvince:
             self.__max_days = np.inf
 
     def __init_province(self):
-        print('Processamento dati riepilogativi provinciali')
+        logging.getLogger().info('Processamento dati riepilogativi provinciali')
         try:
             self._dati_provinciali = pd.read_json(self._province)
         except ValueError as e:
-            print(f'Si è verificato un errore con il json. Tento di usare il csv: {e}')
+            logging.getLogger().error(f'Si è verificato un errore con il json. Tento di usare il csv: {e}')
             self._dati_provinciali = pd.read_csv(self._province_csv)
         self._dati_provinciali.fillna(0, inplace=True)
         self._dati_provinciali = self._dati_provinciali.merge(
