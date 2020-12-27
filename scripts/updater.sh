@@ -8,4 +8,4 @@ DJANGO_WSGI_MODULE=analisi_covid_19_server.wsgi
 
 export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
 
-python3 ${DJANGODIR}/manage.py update_db_from_csv
+python3 ${DJANGODIR}/manage.py updatedata
