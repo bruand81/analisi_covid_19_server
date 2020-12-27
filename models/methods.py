@@ -63,13 +63,15 @@ def update_db():
             logging.getLogger().info(f'update.lock removed')
             logging.getLogger().info(f'{__name__}: Database updated')
             subject = f'Aggiornamento dati COVID 19 Italia [{latest_date_online.strftime("%c")}]'
-            message = f'Database dell\'app Covid 19 Italia aggiornato al {latest_date_online.strftime("%c")}' \
-                           f'Collegati all\'indirizzo https://antarescloud.antaresnet.org/www' \
-                           f'sono stati aggiornati/aggiunti {count_regioni} dati regionali/nazionali e {count_province}  dati provinciali'
+            message = f'Database dell\'app Covid 19 Italia aggiornato al {latest_date_online.strftime("%c")} \n' \
+                      f'Collegati all\'indirizzo https://antarescloud.antaresnet.org/www \n' \
+                      f'Sono stati aggiornati/aggiunti {count_regioni} dati regionali/nazionali e {count_province}  dati provinciali' \
+                      f'Lo Staff'
             message_html = f'<p>Database dell\'app Covid 19 Italia aggiornato al <strong>{latest_date_online.strftime("%c")}</strong></p>' \
                       f'<p>Collegati all\'indirizzo <a href="https://antarescloud.antaresnet.org/www">' \
                       f'https://antarescloud.antaresnet.org/www</a></p>'\
-                      f'<p>sono stati aggiornati/aggiunti <strong>{count_regioni}</strong> dati regionali/nazionali e <strong>{count_province}</strong>  dati provinciali</p>'
+                      f'<p>Sono stati aggiornati/aggiunti <strong>{count_regioni}</strong> dati regionali/nazionali e <strong>{count_province}</strong>  dati provinciali</p>' \
+                      f'<p>Lo Staff</p>'
             email_from = settings.EMAIL_HOST_USER
             recipient_list = ['andrea.bruno@antaresnet.org', ]
             send_mail(subject, message, email_from, recipient_list, fail_silently=False, html_message=message_html)
@@ -94,7 +96,7 @@ def csv_to_db_province() -> int:
     records = df.to_records()  # convert to records
 
     logging.getLogger().info("Saving county in DB")
-    count = 0
+    initial_count = ProvinceItaliane.objects.all().count()
     with transaction.atomic():
         for record in records:
             dato_provinciale = ProvinceItaliane(
@@ -118,9 +120,8 @@ def csv_to_db_province() -> int:
                 nuovi_positivi_7d_incr=record.nuovi_positivi_7d_incr
             )
             dato_provinciale.save()
-            count += 1
     logging.getLogger().info("County data saved in DB")
-    return count
+    return ProvinceItaliane.objects.all().count() - initial_count
 
 
 def csv_to_db_regioni() -> int:
@@ -129,8 +130,8 @@ def csv_to_db_regioni() -> int:
     df = DatiRegioni().dati_completi
     records = df.to_records()  # convert to records
 
+    initial_count = RegioniItaliane.objects.all().count()
     logging.getLogger().info("Saving region in DB")
-    count = 0
     with transaction.atomic():
         for record in records:
             # ts = (record.date - np.datetime64('1970-01-01T00:00:00Z')) / np.timedelta64(1, 's')
@@ -236,9 +237,9 @@ def csv_to_db_regioni() -> int:
                 variazione_ingressi_terapia_intensiva_7dma=record.variazione_ingressi_terapia_intensiva_7dma,
             )
             dato_regionale.save()
-            count += 1
+
     logging.getLogger().info("Region data saved in DB")
-    return count
+    return RegioniItaliane.objects.all().count() - initial_count
 
 
 def clean_region_from_db():

@@ -14,8 +14,11 @@ class Command(BaseCommand):
             updated = False
             while not updated:
                 updated = update_db()
-                time.sleep(settings.UPDATE_INTERVAL)
-                logging.getLogger().info(f'Updated: {updated}')
+                if updated:
+                    logging.getLogger().info(f'Database updated')
+                else:
+                    logging.getLogger().info(f'Database not updated. I will try again in {settings.UPDATE_INTERVAL} seconds')
+                    time.sleep(settings.UPDATE_INTERVAL)
             logging.getLogger().info('Update completed')
             if os.path.exists(lock_file):
                 os.remove(lock_file)
