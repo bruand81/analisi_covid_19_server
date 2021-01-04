@@ -19,6 +19,7 @@ lock_file = f'analisi_covid_update_{datetime.today().strftime("%Y%m%d")}.lock'
 def update_db():
     latest_date_online = DatiRecenti().last_update_date
     updated = False
+    sendmail = False
     if not os.path.exists(lock_file):
         logging.getLogger().info('Check if update db is needed')
         logging.getLogger().info(f'Last online version of data is: {latest_date_online.strftime("%x")}')
@@ -30,16 +31,20 @@ def update_db():
             logging.getLogger().info(f'Last last version in region DB: {latest_date_in_db.strftime("%x")}')
             if (latest_date_online - latest_date_in_db).days > 0:
                 count_regioni += csv_to_db_regioni()
-                updated = True
+                updated = ((latest_date_online - latest_date_in_db).days == 0)
+                sendmail = True
             else:
                 if RegioniItaliane.objects.filter(data=latest_date_in_db).count() < 20:
                     count_regioni += csv_to_db_regioni()
-                    updated = True
+                    updated = (RegioniItaliane.objects.filter(data=latest_date_in_db).count() >= 20)
+                    sendmail = True
                 else:
                     logging.getLogger().info('Region update not needed')
         else:
             count_regioni += csv_to_db_regioni()
-            updated = True
+            latest_date_in_db = RegioniItaliane.objects.latest('data').data
+            updated = ((latest_date_online - latest_date_in_db).days == 0)
+            sendmail = True
 
         if ProvinceItaliane.objects.exists():
             latest_date_in_db = ProvinceItaliane.objects.latest('data').data
@@ -47,18 +52,22 @@ def update_db():
             logging.getLogger().info(f'Last last version in county DB: {latest_date_in_db.strftime("%x")}')
             if (latest_date_online - latest_date_in_db).days > 0:
                 count_province += csv_to_db_province()
-                updated = True
+                updated = ((latest_date_online - latest_date_in_db).days == 0)
+                sendmail = True
             else:
-                if ProvinceItaliane.objects.filter(data=latest_date_in_db).count() < 20:
+                if ProvinceItaliane.objects.filter(data=latest_date_in_db).count() < 140:
                     count_province += csv_to_db_province()
-                    updated = True
+                    updated = ProvinceItaliane.objects.filter(data=latest_date_in_db).count() >= 140
+                    sendmail = True
                 else:
                     logging.getLogger().info('Province update not needed')
         else:
             count_province += csv_to_db_province()
-            updated = True
+            latest_date_in_db = ProvinceItaliane.objects.latest('data').data
+            updated = ((latest_date_online - latest_date_in_db).days == 0)
+            sendmail = True
 
-        if updated:
+        if sendmail:
             os.remove(lock_file)
             logging.getLogger().info(f'update.lock removed')
             logging.getLogger().info(f'{__name__}: Database updated')
@@ -75,6 +84,7 @@ def update_db():
             email_from = settings.EMAIL_HOST_USER
             recipient_list = ['andrea.bruno@antaresnet.org', ]
             send_mail(subject, message, email_from, recipient_list, fail_silently=False, html_message=message_html)
+            sendmail = False
         else:
             logging.getLogger().info(f'{__name__}: Database not updated')
     else:
