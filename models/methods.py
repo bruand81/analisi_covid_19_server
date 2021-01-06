@@ -31,7 +31,8 @@ def update_db():
             logging.getLogger().info(f'Last last version in region DB: {latest_date_in_db.strftime("%x")}')
             if (latest_date_online - latest_date_in_db).days > 0:
                 count_regioni += csv_to_db_regioni()
-                updated = ((latest_date_online - latest_date_in_db).days == 0)
+                latest_date_in_db = RegioniItaliane.objects.latest('data').data
+                updated = ((datetime.now() - latest_date_in_db).days == 0)
                 sendmail = True
             else:
                 if RegioniItaliane.objects.filter(data=latest_date_in_db).count() < 20:
@@ -52,7 +53,8 @@ def update_db():
             logging.getLogger().info(f'Last last version in county DB: {latest_date_in_db.strftime("%x")}')
             if (latest_date_online - latest_date_in_db).days > 0:
                 count_province += csv_to_db_province()
-                updated = ((latest_date_online - latest_date_in_db).days == 0)
+                latest_date_in_db = ProvinceItaliane.objects.latest('data').data
+                updated = ((datetime.now() - latest_date_in_db).days == 0)
                 sendmail = True
             else:
                 if ProvinceItaliane.objects.filter(data=latest_date_in_db).count() < 140:
@@ -64,7 +66,7 @@ def update_db():
         else:
             count_province += csv_to_db_province()
             latest_date_in_db = ProvinceItaliane.objects.latest('data').data
-            updated = ((latest_date_online - latest_date_in_db).days == 0)
+            updated = ((datetime.now() - latest_date_in_db).days == 0)
             sendmail = True
 
         if sendmail:
