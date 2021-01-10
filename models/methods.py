@@ -33,7 +33,7 @@ def update_db():
             if (latest_date_online - latest_date_in_db).days > 0:
                 count_regioni += csv_to_db_regioni()
                 latest_date_in_db = RegioniItaliane.objects.latest('data').data.replace(tzinfo=pytz.UTC)
-                updated = ((datetime.utcnow() - latest_date_in_db).days == 0)
+                updated = ((datetime.utcnow().replace(tzinfo=pytz.UTC) - latest_date_in_db).days == 0)
                 sendmail = True
             else:
                 if RegioniItaliane.objects.filter(data=latest_date_in_db).count() < 20:
@@ -45,7 +45,7 @@ def update_db():
         else:
             count_regioni += csv_to_db_regioni()
             latest_date_in_db = RegioniItaliane.objects.latest('data').data.replace(tzinfo=pytz.UTC)
-            updated = ((datetime.utcnow() - latest_date_in_db).days == 0)
+            updated = ((datetime.utcnow().replace(tzinfo=pytz.UTC) - latest_date_in_db).days == 0)
             # updated = ((latest_date_online - latest_date_in_db).days == 0)
             sendmail = True
 
@@ -56,7 +56,7 @@ def update_db():
             if (latest_date_online - latest_date_in_db).days > 0:
                 count_province += csv_to_db_province()
                 latest_date_in_db = ProvinceItaliane.objects.latest('data').data.replace(tzinfo=pytz.UTC)
-                updated = ((datetime.utcnow() - latest_date_in_db).days == 0)
+                updated = ((datetime.utcnow().replace(tzinfo=pytz.UTC) - latest_date_in_db).days == 0)
                 sendmail = True
             else:
                 if ProvinceItaliane.objects.filter(data=latest_date_in_db).count() < 140:
@@ -68,7 +68,7 @@ def update_db():
         else:
             count_province += csv_to_db_province()
             latest_date_in_db = ProvinceItaliane.objects.latest('data').data.replace(tzinfo=pytz.UTC)
-            updated = ((datetime.utcnow() - latest_date_in_db).days == 0)
+            updated = ((datetime.utcnow().replace(tzinfo=pytz.UTC) - latest_date_in_db).days == 0)
             sendmail = True
 
         if sendmail:
