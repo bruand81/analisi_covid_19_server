@@ -10,6 +10,7 @@ from models.DatiRegioni import DatiRegioni
 from models.utils import convert_to_datetime
 from province.models import ProvinceItaliane
 from regioni.models import RegioniItaliane
+import pytz
 import os
 from datetime import datetime
 
@@ -31,8 +32,8 @@ def update_db():
             logging.getLogger().info(f'Last last version in region DB: {latest_date_in_db.strftime("%x")}')
             if (latest_date_online - latest_date_in_db).days > 0:
                 count_regioni += csv_to_db_regioni()
-                latest_date_in_db = RegioniItaliane.objects.latest('data').data
-                updated = ((datetime.now() - latest_date_in_db).days == 0)
+                latest_date_in_db = RegioniItaliane.objects.latest('data').data.replace(tzinfo=pytz.UTC)
+                updated = ((datetime.utcnow() - latest_date_in_db).days == 0)
                 sendmail = True
             else:
                 if RegioniItaliane.objects.filter(data=latest_date_in_db).count() < 20:
@@ -43,8 +44,9 @@ def update_db():
                     logging.getLogger().info('Region update not needed')
         else:
             count_regioni += csv_to_db_regioni()
-            latest_date_in_db = RegioniItaliane.objects.latest('data').data
-            updated = ((latest_date_online - latest_date_in_db).days == 0)
+            latest_date_in_db = RegioniItaliane.objects.latest('data').data.replace(tzinfo=pytz.UTC)
+            updated = ((datetime.utcnow() - latest_date_in_db).days == 0)
+            # updated = ((latest_date_online - latest_date_in_db).days == 0)
             sendmail = True
 
         if ProvinceItaliane.objects.exists():
@@ -53,8 +55,8 @@ def update_db():
             logging.getLogger().info(f'Last last version in county DB: {latest_date_in_db.strftime("%x")}')
             if (latest_date_online - latest_date_in_db).days > 0:
                 count_province += csv_to_db_province()
-                latest_date_in_db = ProvinceItaliane.objects.latest('data').data
-                updated = ((datetime.now() - latest_date_in_db).days == 0)
+                latest_date_in_db = ProvinceItaliane.objects.latest('data').data.replace(tzinfo=pytz.UTC)
+                updated = ((datetime.utcnow() - latest_date_in_db).days == 0)
                 sendmail = True
             else:
                 if ProvinceItaliane.objects.filter(data=latest_date_in_db).count() < 140:
@@ -65,8 +67,8 @@ def update_db():
                     logging.getLogger().info('Province update not needed')
         else:
             count_province += csv_to_db_province()
-            latest_date_in_db = ProvinceItaliane.objects.latest('data').data
-            updated = ((datetime.now() - latest_date_in_db).days == 0)
+            latest_date_in_db = ProvinceItaliane.objects.latest('data').data.replace(tzinfo=pytz.UTC)
+            updated = ((datetime.utcnow() - latest_date_in_db).days == 0)
             sendmail = True
 
         if sendmail:
