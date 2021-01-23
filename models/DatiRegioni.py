@@ -18,7 +18,9 @@ class DatiRegioni:
     _regioni = f'{_repo_path}/dati-json/dpc-covid19-ita-regioni.json'
     _variation_columns = ['tamponi', 'casi_testati', 'terapia_intensiva', 'ricoverati_con_sintomi', 'deceduti',
                           'dimessi_guariti', 'isolamento_domiciliare', 'casi_da_screening',
-                          'casi_da_sospetto_diagnostico', 'ingressi_terapia_intensiva']
+                          'casi_da_sospetto_diagnostico', 'ingressi_terapia_intensiva',
+                          'totale_positivi_test_molecolare', 'totale_positivi_test_antigenico_rapido',
+                          'tamponi_test_molecolare', 'tamponi_test_antigenico_rapido']
     _full_data: pd.DataFrame = None
     _istat = PopolazioneIstat()
     __max_days = np.inf
@@ -79,6 +81,10 @@ class DatiRegioni:
         ricoverati_con_sintomi_7dsum = pd.Series(index=self._full_data.index).fillna(0).astype(int)
         nuovi_positivi_7dma = pd.Series(index=self._full_data.index).fillna(0).astype(int)
         nuovi_positivi_3dma = pd.Series(index=self._full_data.index).fillna(0).astype(int)
+        nuovi_positivi_molecolare_7dma = pd.Series(index=self._full_data.index).fillna(0).astype(int)
+        nuovi_positivi_molecolare_3dma = pd.Series(index=self._full_data.index).fillna(0).astype(int)
+        nuovi_positivi_antigenico_7dma = pd.Series(index=self._full_data.index).fillna(0).astype(int)
+        nuovi_positivi_antigenico_3dma = pd.Series(index=self._full_data.index).fillna(0).astype(int)
         # casi_testati_7dma = pd.Series([])
         increments = pd.Series([])
         increments_percentage = pd.Series([])
@@ -98,6 +104,14 @@ class DatiRegioni:
             increments_3dma = pd.concat([increments_3dma, tmp.rolling(window=3).mean()], axis=0)
             nuovi_positivi_7dma.iloc[self._full_data[selected_rows].index] = self._full_data[selected_rows].nuovi_positivi.rolling(window=7).mean()
             nuovi_positivi_3dma.iloc[self._full_data[selected_rows].index] = self._full_data[selected_rows].nuovi_positivi. rolling(window=3).mean()
+            nuovi_positivi_molecolare_7dma.iloc[self._full_data[selected_rows].index] = self._full_data[
+                selected_rows].totale_positivi_test_molecolare.rolling(window=7).mean()
+            nuovi_positivi_molecolare_3dma.iloc[self._full_data[selected_rows].index] = self._full_data[
+                selected_rows].totale_positivi_test_molecolare.rolling(window=3).mean()
+            nuovi_positivi_antigenico_7dma.iloc[self._full_data[selected_rows].index] = self._full_data[
+                selected_rows].totale_positivi_test_antigenico_rapido.rolling(window=7).mean()
+            nuovi_positivi_antigenico_3dma.iloc[self._full_data[selected_rows].index] = self._full_data[
+                selected_rows].totale_positivi_test_antigenico_rapido.rolling(window=3).mean()
             nuovi_positivi_7dsum.iloc[self._full_data[selected_rows].index] = self._full_data[selected_rows].nuovi_positivi.rolling(window=7).sum()
             terapia_intensiva_7dsum.iloc[tmp.index] = tmp.terapia_intensiva.rolling(window=7).sum()
             deceduti_7dsum.iloc[tmp.index] = tmp.deceduti.rolling(window=7).sum()
@@ -174,6 +188,9 @@ class DatiRegioni:
 
         self._full_data.replace([np.inf, -np.inf], np.nan, inplace=True)
         self._full_data.fillna(0, inplace=True)
+        self._full_data[self._full_data.note_casi == "0.0"]["note_casi"] = None
+        self._full_data[self._full_data.note_test == "0.0"]["note_test"] = None
+
 
     @property
     def popolazione_istat(self) -> pd.DataFrame:

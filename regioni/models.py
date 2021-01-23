@@ -99,6 +99,35 @@ class RegioniItaliane(models.Model):
     variazione_ingressi_terapia_intensiva_3dma = models.IntegerField(default=0)
     variazione_ingressi_terapia_intensiva_7dma = models.IntegerField(default=0)
 
+    #Aggiornamento dati 18/01/2021
+    note_test = models.TextField(blank=True, null=True, default=None)
+    note_casi = models.TextField(blank=True, null=True, default=None)
+    totale_positivi_test_molecolare = models.IntegerField(default=0)
+    variazione_totale_positivi_test_molecolare = models.IntegerField(default=0)
+    variazione_totale_positivi_test_molecolare_3dma = models.IntegerField(default=0)
+    variazione_totale_positivi_test_molecolare_7dma = models.IntegerField(default=0)
+    percentuale_totale_positivi_test_molecolare = models.IntegerField(default=0)
+
+    totale_positivi_test_antigenico_rapido = models.IntegerField(default=0)
+    variazione_totale_positivi_test_antigenico_rapido = models.IntegerField(default=0)
+    variazione_totale_positivi_test_antigenico_rapido_3dma = models.IntegerField(default=0)
+    variazione_totale_positivi_test_antigenico_rapido_7dma = models.IntegerField(default=0)
+    percentuale_totale_positivi_test_antigenico_rapido = models.IntegerField(default=0)
+
+    tamponi_test_molecolare = models.IntegerField(default=0)
+    variazione_tamponi_test_molecolare = models.IntegerField(default=0)
+    variazione_tamponi_test_molecolare_3dma = models.IntegerField(default=0)
+    variazione_tamponi_test_molecolare_7dma = models.IntegerField(default=0)
+    percentuale_tamponi_test_molecolare = models.IntegerField(default=0)
+    percentuale_tamponi_test_molecolare_3dma = models.IntegerField(default=0)
+    percentuale_tamponi_test_molecolare_7dma = models.IntegerField(default=0)
+
+    tamponi_test_antigenico_rapido = models.IntegerField(default=0)
+    variazione_tamponi_test_antigenico_rapido = models.IntegerField(default=0)
+    variazione_tamponi_test_antigenico_rapido_3dma = models.IntegerField(default=0)
+    variazione_tamponi_test_antigenico_rapido_7dma = models.IntegerField(default=0)
+    percentuale_tamponi_test_antigenico_rapido = models.IntegerField(default=0)
+
     class Meta:
         verbose_name = 'Riepilogo Italia'
         verbose_name_plural = 'Riepilogo Italia'

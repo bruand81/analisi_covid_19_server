@@ -249,6 +249,34 @@ def csv_to_db_regioni() -> int:
                 variazione_ingressi_terapia_intensiva=record.variazione_ingressi_terapia_intensiva,
                 variazione_ingressi_terapia_intensiva_3dma=record.variazione_ingressi_terapia_intensiva_3dma,
                 variazione_ingressi_terapia_intensiva_7dma=record.variazione_ingressi_terapia_intensiva_7dma,
+
+                # Update 18/01/2021
+                note_test=record.note_test,
+                note_casi=record.note_casi,
+                totale_positivi_test_molecolare=record.totale_positivi_test_molecolare,
+                variazione_totale_positivi_test_molecolare=record.variazione_totale_positivi_test_molecolare,
+                variazione_totale_positivi_test_molecolare_3dma=record.variazione_totale_positivi_test_molecolare_3dma,
+                variazione_totale_positivi_test_molecolare_7dma=record.variazione_totale_positivi_test_molecolare_7dma,
+                percentuale_totale_positivi_test_molecolare=record.percentuale_variazione_totale_positivi_test_molecolare,
+
+                totale_positivi_test_antigenico_rapido=record.totale_positivi_test_antigenico_rapido,
+                variazione_totale_positivi_test_antigenico_rapido=record.variazione_totale_positivi_test_antigenico_rapido,
+                variazione_totale_positivi_test_antigenico_rapido_3dma=record.variazione_totale_positivi_test_antigenico_rapido_3dma,
+                variazione_totale_positivi_test_antigenico_rapido_7dma=record.variazione_totale_positivi_test_antigenico_rapido_7dma,
+                percentuale_totale_positivi_test_antigenico_rapido=record.percentuale_variazione_totale_positivi_test_antigenico_rapido,
+
+                tamponi_test_molecolare=record.tamponi_test_molecolare,
+                variazione_tamponi_test_molecolare=record.variazione_tamponi_test_molecolare,
+                variazione_tamponi_test_molecolare_3dma=record.variazione_tamponi_test_molecolare_3dma,
+                variazione_tamponi_test_molecolare_7dma=record.variazione_tamponi_test_molecolare_7dma,
+                percentuale_tamponi_test_molecolare=record.percentuale_variazione_tamponi_test_molecolare,
+
+                tamponi_test_antigenico_rapido=record.tamponi_test_antigenico_rapido,
+                variazione_tamponi_test_antigenico_rapido=record.variazione_tamponi_test_antigenico_rapido,
+                variazione_tamponi_test_antigenico_rapido_3dma=record.variazione_tamponi_test_antigenico_rapido_3dma,
+                variazione_tamponi_test_antigenico_rapido_7dma=record.variazione_tamponi_test_antigenico_rapido_7dma,
+                percentuale_tamponi_test_antigenico_rapido=record.percentuale_variazione_tamponi_test_antigenico_rapido,
+
             )
             dato_regionale.save()
 
