@@ -24,8 +24,12 @@ class Command(BaseCommand):
                         logging.getLogger().info(
                             f'Database not updated. I will try again in {settings.UPDATE_INTERVAL} seconds')
                         time.sleep(settings.UPDATE_INTERVAL)
+                except IndexError:
+                    logging.getLogger().exception(f"Recoverable error importing data", exc_info=sys.exc_info())
                 except:
                     logging.getLogger().exception(f"Error importing data", exc_info=sys.exc_info())
+                    os.remove(lockfile)
+                    return
             logging.getLogger().info('Update completed')
             if os.path.exists(lockfile):
                 os.remove(lockfile)
