@@ -11,11 +11,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         logging.getLogger().info('Invoked update')
         lockfile = f'analisi_covid_update_{datetime.today().strftime("%Y%m%d")}.lock'
-        try:
-            if not os.path.exists(lockfile):
-                logging.getLogger().info('Starting update')
-                updated = False
-                while not updated:
+
+        if not os.path.exists(lockfile):
+            logging.getLogger().info('Starting update')
+            updated = False
+            while not updated:
+                try:
                     updated = update_db()
                     if updated:
                         logging.getLogger().info(f'Database updated')
@@ -23,8 +24,8 @@ class Command(BaseCommand):
                         logging.getLogger().info(
                             f'Database not updated. I will try again in {settings.UPDATE_INTERVAL} seconds')
                         time.sleep(settings.UPDATE_INTERVAL)
-                logging.getLogger().info('Update completed')
-                if os.path.exists(lockfile):
-                    os.remove(lockfile)
-        except:
-            logging.getLogger().exception(f"Error importing data", exc_info=sys.exc_info())
+                except:
+                    logging.getLogger().exception(f"Error importing data", exc_info=sys.exc_info())
+            logging.getLogger().info('Update completed')
+            if os.path.exists(lockfile):
+                os.remove(lockfile)
