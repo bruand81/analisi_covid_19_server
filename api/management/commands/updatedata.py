@@ -26,6 +26,7 @@ class Command(BaseCommand):
                         time.sleep(settings.UPDATE_INTERVAL)
                 except IndexError:
                     logging.getLogger().exception(f"Recoverable error importing data", exc_info=sys.exc_info())
+                    os.remove(lockfile)
                 except:
                     logging.getLogger().exception(f"Error importing data", exc_info=sys.exc_info())
                     os.remove(lockfile)
