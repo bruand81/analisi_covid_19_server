@@ -188,8 +188,8 @@ class DatiRegioni:
 
         self._full_data.replace([np.inf, -np.inf], np.nan, inplace=True)
         self._full_data.fillna(0, inplace=True)
-        self._full_data[self._full_data.note_casi == "0.0"]["note_casi"] = None
-        self._full_data[self._full_data.note_test == "0.0"]["note_test"] = None
+        self._full_data.loc[self._full_data.note_casi == "0.0", "note_casi"] = None
+        self._full_data.loc[self._full_data.note_test == "0.0", "note_test"] = None
 
 
     @property
